@@ -2,23 +2,23 @@
 
 
 #create a bridges for future networks
-brctl addbr internalbr
-brctl addbr managementbr
-brctl addbr externalbr
+#brctl addbr internalbr
+#brctl addbr managementbr
+#brctl addbr externalbr
 
 #create bridge IFs. First fail, "interface is not exist"
-brctl addif internalbr intern
-brctl addif managementbr manage
-brctl addif externalbr extern
+#brctl addif internalbr intern
+#brctl addif managementbr manage
+#brctl addif externalbr extern
 
 #set up nenwork configuration of this bridges
-ifconfig managementbr 192.168.100.1 netmask 255.255.255.0
-ifconfig externalbr 192.168.110.1 netmask 255.255.255.0
+#ifconfig managementbr 192.168.100.1 netmask 255.255.255.0
+#ifconfig externalbr 192.168.110.1 netmask 255.255.255.0
 
 #we up IFs. Not work, coz they arent exist
-ifconfig internalbr up
-ifconfig managementbr up
-ifconfig externalbr up
+#ifconfig internalbr up
+#ifconfig managementbr up
+#ifconfig externalbr up
 
 #making templates fot lib networks
 echo "

@@ -24,18 +24,18 @@
 echo "
 <network>
     <name>internal</name>
-    <bridge name="internalbr" />
+    <bridge name='internalbr' />
 </network>
 " > /home/test/internal_template.xml
 
 echo "
 <network>
     <name>management</name>
-    <bridge name="managementbr" />
-    <forward mode="route"/>
-    <ip address="192.168.100.1" netmask="255.255.255.0">
+    <bridge name='managementbr' />
+    <forward mode='route'/>
+    <ip address='192.168.100.1' netmask='255.255.255.0'>
         <dhcp>
-            <range start="192.168.100.101" end="192.168.100.201" />
+            <range start='192.168.100.101' end='192.168.100.201' />
         </dhcp>
     </ip>
 </network>
@@ -44,10 +44,10 @@ echo "
 echo "
 <network>
     <name>external</name>
-    <bridge name="externalbr" />
-    <ip address="192.168.110.1" netmask="255.255.255.0">
+    <bridge name='externalbr' />
+    <ip address='192.168.110.1' netmask='255.255.255.0'>
         <dhcp>
-            <range start="192.168.110.101" end="192.168.110.201" />
+            <range start='192.168.110.101' end='192.168.110.201' />
         </dhcp>
     </ip>
 </network>
@@ -56,5 +56,9 @@ echo "
 #creating networks from templates
 virsh net-create /home/test/internal_template.xml
 virsh net-create /home/test/management_template.xml
-virsh net-create /home/test/management_template.xml
+virsh net-create /home/test/external_template.xml
+
+virsh net-autostart internal
+virsh net-autostart external
+virsh net-autostart management
 

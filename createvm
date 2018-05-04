@@ -1,0 +1,18 @@
+virt-install -n vm14 \
+#this about baremetal. we can configure ALL what we can omagine if it can be
+#configured at least
+--memory 1024 \
+--vcpus=1 \
+#from where we take a source. this example about an import image as a HDD
+#we can cinfigure it as a bootable installer or all another
+--import --disk path=/home/user/xenial14.qcow2,format=qcow2 \
+#where the "HDD" image will locate. We can make another place if it need
+--disk pool=default,size=10,bus=virtio,format=qcow2, \
+#monitor
+--vnc \
+#about networks. This example about a bridge, but we can make many kinds of
+#network configuration
+--network=bridge:externalbr,model=virtio
+
+#how to conwert, loght example with the importable image
+qemu-img convert -O qcow2 /home/user/xenial.img /home/user/xenial14.qcow2

@@ -1,64 +1,51 @@
 #!/bin/bash
 
 
-#create a bridges for future networks
-#brctl addbr internalbr
-#brctl addbr managementbr
-#brctl addbr externalbr
+. ./config
+mkdir ./networks
 
-#create bridge IFs. First fail, "interface is not exist"
-#brctl addif internalbr intern
-#brctl addif managementbr manage
-#brctl addif externalbr extern
+MAC=52:54:00:`(date; cat /proc/interrupts) | md5sum | sed -r 's/^(.{6}).*$/\1/; s/([0-9a-f]{2})/\1:/g; s/:$//;'`
 
-#set up nenwork configuration of this bridges
-#ifconfig managementbr 192.168.100.1 netmask 255.255.255.0
-#ifconfig externalbr 192.168.110.1 netmask 255.255.255.0
-
-#we up IFs. Not work, coz they arent exist
-#ifconfig internalbr up
-#ifconfig managementbr up
-#ifconfig externalbr up
 
 #making templates fot lib networks
 echo "
 <network>
-    <name>internal</name>
+    <name>$INTERNAL_NET_NAME</name>
     <bridge name='internalbr' />
 </network>
-" > /home/test/internal_template.xml
+" > ./networks/${INTERNAL_NET_NAME}.xml
 
 echo "
 <network>
-    <name>management</name>
+    <name>$MANAGEMENT_NET_NAME</name>
     <bridge name='managementbr' />
     <forward mode='route'/>
-    <ip address='192.168.100.1' netmask='255.255.255.0'>
-        <dhcp>
-            <range start='192.168.100.101' end='192.168.100.201' />
-        </dhcp>
-    </ip>
+    <ip address='$MANAGEMENT_HOST_IP' netmask='$MANAGEMENT_NET_MASK' />
 </network>
-" > /home/test/management_template.xml
+" > ./networks/${MANAGEMENT_NET_NAME}.xml
 
 echo "
 <network>
-    <name>external</name>
+    <name>$EXTERNAL_NET_NAME</name>
     <bridge name='externalbr' />
-    <ip address='192.168.110.1' netmask='255.255.255.0'>
+    <ip address='$EXTERNAL_NET_HOST_IP' netmask='$EXTERNAL_NET_MASK'>
+    <forward mode='nat' />
         <dhcp>
-            <range start='192.168.110.101' end='192.168.110.201' />
-        </dhcp>
+            <range start='$VM1_EXTERNAL_IP' end='$VM1_EXTERNAL_IP' />
+         <host mac='$MAC' name='$VM1_NAME' ip='$VM1_EXTRNAL_IP'/>
+
+</dhcp>
     </ip>
 </network>
-" > /home/test/external_template.xml
+" > ./networks/${EXTERNAL_NET_NAME}.xml
 
 #creating networks from templates
-virsh net-create /home/test/internal_template.xml
-virsh net-create /home/test/management_template.xml
-virsh net-create /home/test/external_template.xml
+virsh net-create ./networks/${INTERNAL_NET_NAME}.xml
+virsh net-create ./networks/${MANAGEMENT_NET_NAME}.xml
+virsh net-create ./networks/${EXTERNAL_NET_NAME}.xml
 
-virsh net-autostart internal
-virsh net-autostart external
-virsh net-autostart management
+virsh net-autostart $INTERNAL_NET_NAME
+virsh net-autostart $EXTERNAL_NET_NAME
+virsh net-autostart $MANAGEMENT_NET_NAME
+
 

@@ -20,7 +20,6 @@ echo "#cloud-config
 #ssh_svcname: ssh
 runcmd:
   - ip link set $VM1_MANAGEMENT_IF down && ip link set $VM1_MANAGEMENT_IF up
-  - service network restart && systemctl restart sshd.service
   - ip addr add $VM1_MANAGEMENT_IP/$MANAGEMENT_NET_MASK
 " > ./config-drives/vm1-config/user-data
 
@@ -29,7 +28,6 @@ echo "#cloud-config
 #ssh_svcname: ssh
 runcmd:
   - ip link set $VM2_MANAGEMENT_IF down && ip link set $VM2_MANAGEMENT_IF up
-  - service network restart && systemctl restart sshd.service
   - ip addr add $VM2_MANAGEMENT_IP/$MANAGEMENT_NET_MASK
 " > ./config-drives/vm2-config/user-data
 

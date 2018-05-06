@@ -1,0 +1,7 @@
+#cloud-config
+#ssh_svcname: ssh
+runcmd:
+  - ip link set ens5 down && ip link set ens5 up
+  - service network restart && systemctl restart sshd.service
+  - ip addr add 192.168.125.101/255.255.255.0
+

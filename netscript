@@ -32,7 +32,7 @@ echo "
     <forward mode='nat' />
         <dhcp>
             <range start='$VM1_EXTERNAL_IP' end='$VM1_EXTERNAL_IP' />
-         <host mac='$MAC' name='$VM1_NAME' ip='$VM1_EXTRNAL_IP'/>
+         <host mac='$MAC' name='$VM1_NAME' ip='$VM1_EXTERNAL_IP'/>
 
 </dhcp>
     </ip>
@@ -40,9 +40,13 @@ echo "
 " > ./networks/${EXTERNAL_NET_NAME}.xml
 
 #creating networks from templates
-virsh net-create ./networks/${INTERNAL_NET_NAME}.xml
-virsh net-create ./networks/${MANAGEMENT_NET_NAME}.xml
-virsh net-create ./networks/${EXTERNAL_NET_NAME}.xml
+virsh net-define ./networks/${INTERNAL_NET_NAME}.xml
+virsh net-define ./networks/${MANAGEMENT_NET_NAME}.xml
+virsh net-define ./networks/${EXTERNAL_NET_NAME}.xml
+
+virsh net-start $INTERNAL_NET_NAME
+virsh net-start $EXTERNAL_NET_NAME
+virsh net-start $MANAGEMENT_NET_NAME
 
 virsh net-autostart $INTERNAL_NET_NAME
 virsh net-autostart $EXTERNAL_NET_NAME

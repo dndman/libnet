@@ -1,24 +1,41 @@
 #!/bin/bash
 
 
+. ./config
+
+sudo virt-install \
+--import \
+--name $VM1_NAME \
+--ram $VM1_MB_RAM \
+--vcpus $VM1_NUM_CPU \
+--disk ${VM1_HDD},format=qcow2,bus=virtio \
+--disk ${VM1_CONFIG_ISO},device=cdrom \
+--network bridge=${EXTERNAL_NET_NAME},model=virtio \
+--network bridge=${INTERNAL_NET_NAME},model=virtio \
+--network bridge=${MANAGEMENT_NET_NAME},model=virtio \
+--os-type=linux
+
+#--os-variant=rhel6 \
+#--noautoconsole
 
 
 
-virt-install -n vm14 \
-#this about baremetal. we can configure ALL what we can omagine if it can be
+
+#virt-install -n vm14 \
+##this about baremetal. we can configure ALL what we can omagine if it can be
 #configured at least
---memory 1024 \
---vcpus=1 \
+#--memory 1024 \
+#--vcpus=1 \
 #from where we take a source. this example about an import image as a HDD
 #we can cinfigure it as a bootable installer or all another
---import --disk path=/home/user/xenial14.qcow2,format=qcow2 \
+#--import --disk path=/home/user/xenial14.qcow2,format=qcow2 \
 #where the "HDD" image will locate. We can make another place if it need
---disk pool=default,size=10,bus=virtio,format=qcow2, \
+#--disk pool=default,size=10,bus=virtio,format=qcow2, \
 #monitor
---vnc \
+#--vnc \
 #about networks. This example about a bridge, but we can make many kinds of
 #network configuration
---network=bridge:externalbr,model=virtio
+#--network=bridge:externalbr,model=virtio
 
 #how to conwert, loght example with the importable image
-qemu-img convert -O qcow2 /home/user/xenial.img /home/user/xenial14.qcow2
+#qemu-img convert -O qcow2 /home/user/xenial.img /home/user/xenial14.qcow2

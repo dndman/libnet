@@ -6,7 +6,7 @@ apt  install -y qemu libvirt-bin genisoimage
 
 
 . ./config
-mkdir ./networks
+mkdir -p ./networks
 
 MAC=52:54:00:`(date; cat /proc/interrupts) | md5sum | sed -r 's/^(.{6}).*$/\1/; s/([0-9a-f]{2})/\1:/g; s/:$//;'`
 
@@ -55,5 +55,22 @@ virsh net-start $MANAGEMENT_NET_NAME
 virsh net-autostart $INTERNAL_NET_NAME
 virsh net-autostart $EXTERNAL_NET_NAME
 virsh net-autostart $MANAGEMENT_NET_NAME
+
+
+sudo virt-install \
+--import \
+--name $VM1_NAME \
+--ram $VM1_MB_RAM \
+--vcpus $VM1_NUM_CPU \
+--disk ${VM1_HDD},format=qcow2,bus=virtio \
+--disk ${VM1_CONFIG_ISO},device=cdrom \
+--network bridge=externalbr,model=virtio,mac=$MAC \
+--network bridge=internalbr,model=virtio \
+--network bridge=managementbr,model=virtio \
+--graphics none \
+--noautoconsole
+
+
+
 
 

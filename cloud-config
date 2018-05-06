@@ -6,13 +6,14 @@
 
 mkdir -p ./config-drives/vm1-config ./config-drives/vm2-config
 
-echo "instance-id: ${VM1_NAME}id
+echo "instance-id: iid-${VM1_NAME}
 local-hostname: $VM1_NAME
 " >./config-drives/vm1-config/meta-data
 
-echo "instance-id: ${VM2_NAME}id
+echo "instance-id: iid-${VM2_NAME}
 local-hostname: $VM2_NAME
 " >./config-drives/vm2-config/meta-data
+
 
 
 
@@ -20,8 +21,8 @@ echo "#cloud-config
 #ssh_svcname: ssh
 runcmd:
   - ip link set $VM1_MANAGEMENT_IF down && ip link set $VM1_MANAGEMENT_IF up
-  - service network restart && systemctl restart sshd.service
-  - ip addr add $VM1_MANAGEMENT_IP/$MANAGEMENT_NET_MASK
+  - ip addr add $VM1_MANAGEMENT_IP/$MANAGEMENT_NET_MASK dev $VM1_MANAGEMENT_IF
+
 " > ./config-drives/vm1-config/user-data
 
 
@@ -29,8 +30,7 @@ echo "#cloud-config
 #ssh_svcname: ssh
 runcmd:
   - ip link set $VM2_MANAGEMENT_IF down && ip link set $VM2_MANAGEMENT_IF up
-  - service network restart && systemctl restart sshd.service
-  - ip addr add $VM2_MANAGEMENT_IP/$MANAGEMENT_NET_MASK
+  - ip addr add $VM2_MANAGEMENT_IP/$MANAGEMENT_NET_MASK dev $VM2_MANAGEMENT_IF
 " > ./config-drives/vm2-config/user-data
 
 mkisofs -R -V cidata -joliet -o $VM1_CONFIG_ISO ./config-drives/vm1-config

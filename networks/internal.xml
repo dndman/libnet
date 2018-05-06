@@ -1,6 +1,0 @@
-
-<network>
-    <name>internal</name>
-    <bridge name='internalbr' />
-</network>
-

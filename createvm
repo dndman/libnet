@@ -10,9 +10,9 @@ sudo virt-install \
 --vcpus $VM1_NUM_CPU \
 --disk ${VM1_HDD},format=qcow2,bus=virtio \
 --disk ${VM1_CONFIG_ISO},device=cdrom \
---network bridge=${EXTERNAL_NET_NAME},model=virtio \
---network bridge=${INTERNAL_NET_NAME},model=virtio \
---network bridge=${MANAGEMENT_NET_NAME},model=virtio \
+--network bridge=externalbr,model=virtio \
+--network bridge=internalbr,model=virtio \
+--network bridge=managementbr,model=virtio \
 --os-type=linux
 
 #--os-variant=rhel6 \

@@ -1,6 +1,10 @@
 #!/bin/bash
 
 
+modprobe kvm
+apt  install -y qemu libvirt-bin genisoimage
+
+
 . ./config
 mkdir ./networks
 

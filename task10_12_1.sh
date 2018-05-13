@@ -5,7 +5,7 @@ set -x
 set -e
 #adding a kvm
 modprobe kvm
-DIRWAY=$(dirname $(pwd)/$0 )
+DIRWAY=$(dirname $(readlink -f ${BASH_SOURCE[0]}) )
 #update and install libvirt and a tool for making .iso for cloud-config
 apt update
 apt  install -y qemu libvirt-bin genisoimage virtinst

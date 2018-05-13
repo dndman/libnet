@@ -14,7 +14,11 @@ apt  install -y qemu libvirt-bin genisoimage virtinst
 mkdir -p ./networks
 
 #generating MAC for external if on VM1
+if [ ! -f /tmp/mac ] ; then
 MAC=52:54:00:`(date; cat /proc/interrupts) | md5sum | sed -r 's/^(.{6}).*$/\1/; s/([0-9a-f]{2})/\1:/g; s/:$//;'`
+echo "MAC=$MAC" > /tmp/mac
+fi
+ . ./tmp/mac
 
 
 #making templates fot lib networks
@@ -92,13 +96,14 @@ runcmd:
   - ip addr add $VM2_MANAGEMENT_IP/$MANAGEMENT_NET_MASK dev $VM2_MANAGEMENT_IF
 " > ./config-drives/vm2-config/user-data
 
+#making a directories to store "hdd" of VMs
+mkdir -p $(dirname "${VM1_HDD}")
+mkdir -p $(dirname "${VM2_HDD}")
+
 #making iso files for cloud-config
 mkisofs -R -V cidata -joliet -o $VM1_CONFIG_ISO ./config-drives/vm1-config
 mkisofs -R -V cidata -joliet -o $VM2_CONFIG_ISO ./config-drives/vm2-config
 
-#making a directories to store "hdd" of VMs
-mkdir -p $(dirname "${VM1_HDD}")
-mkdir -p $(dirname "${VM2_HDD}")
 
 #download image and making a "hdd" for VM1 from it
 if [ ! -f /tmp/ubuntu.qcow2 ] ; then

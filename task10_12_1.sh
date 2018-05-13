@@ -74,7 +74,7 @@ virsh net-autostart $MANAGEMENT_NET_NAME
 
 
 #making directory for config files of VMs
-mkdir -p $DIRWAY/config-drives/vm1-config ./config-drives/vm2-config
+mkdir -p $DIRWAY/config-drives/vm1-config $DIRWAY/config-drives/vm2-config
 
 #create meta-data dir and files for VMs
 echo "instance-id: iid-${VM1_NAME}

@@ -5,7 +5,7 @@
 modprobe kvm
 #update and install libvirt and a tool for making .iso for cloud-config
 apt update
-apt  install -y qemu libvirt-bin genisoimage
+apt  install -y qemu libvirt-bin genisoimage virtinst
 
 #adding a conf file as a data source
 . ./config

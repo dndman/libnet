@@ -2,6 +2,7 @@
 
 
 set -x
+set -e
 #adding a kvm
 modprobe kvm
 #update and install libvirt and a tool for making .iso for cloud-config
@@ -97,6 +98,10 @@ runcmd:
   - sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
   - sysctl -p
   - iptables -t nat -A POSTROUTING -o $VM1_EXTERNAL_IF -s $VM1_INTERNAL_IP/$INTERNAL_NET_MASK -j MASQUERADE
+  - add-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/ubuntu \$(lsb_release -cs) stable\"
+  - apt-get update
+  - apt-get -y install docker-ce
+
   - touch /tmp/complete
 
 ssh_authorized_keys:
@@ -152,6 +157,9 @@ runcmd:
   - ifup $VM2_INTERNAL_IF
   - ifup $VM2_MANAGEMENT_IF
   - ifup $VXLAN_IF
+  - add-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/ubuntu \$(lsb_release -cs) stable\"
+  - apt-get update
+  - apt-get -y install docker-ce
   - touch /tmp/complete
 
 ssh_authorized_keys:

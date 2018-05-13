@@ -5,16 +5,17 @@ set -x
 set -e
 #adding a kvm
 modprobe kvm
+DIRWAY=$(dirname $(pwd)/$0 )
 #update and install libvirt and a tool for making .iso for cloud-config
 apt update
 apt  install -y qemu libvirt-bin genisoimage virtinst
-./netkiller
+$DIRWAY/netkiller || true
 
 
 #adding a conf file as a data source
-. ./config
+. $DIRWAY/config
 #making directory for xml templates
-mkdir -p ./networks
+mkdir -p $DIRWAY/networks
 
 #generating MAC for external if on VM1
 if [ ! -f /tmp/mac ] ; then
@@ -25,13 +26,13 @@ else
 fi
 
 
-#making templates fot lib networks
+#making templates for lib networks
 echo "
 <network>
     <name>$INTERNAL_NET_NAME</name>
     <bridge name='internalbr' />
 </network>
-" > ./networks/${INTERNAL_NET_NAME}.xml
+" > $DIRWAY/networks/${INTERNAL_NET_NAME}.xml
 
 echo "
 <network>
@@ -40,7 +41,7 @@ echo "
     <forward mode='route'/>
     <ip address='$MANAGEMENT_HOST_IP' netmask='$MANAGEMENT_NET_MASK' />
 </network>
-" > ./networks/${MANAGEMENT_NET_NAME}.xml
+" > $DIRWAY/networks/${MANAGEMENT_NET_NAME}.xml
 
 echo "
 <network>
@@ -55,12 +56,12 @@ echo "
 </dhcp>
     </ip>
 </network>
-" > ./networks/${EXTERNAL_NET_NAME}.xml
+" > $DIRWAY/networks/${EXTERNAL_NET_NAME}.xml
 
 #creating networks from templates
-virsh net-define ./networks/${INTERNAL_NET_NAME}.xml
-virsh net-define ./networks/${MANAGEMENT_NET_NAME}.xml
-virsh net-define ./networks/${EXTERNAL_NET_NAME}.xml
+virsh net-define $DIRWAY/networks/${INTERNAL_NET_NAME}.xml
+virsh net-define $DIRWAY/networks/${MANAGEMENT_NET_NAME}.xml
+virsh net-define $DIRWAY/networks/${EXTERNAL_NET_NAME}.xml
 
 virsh net-start $INTERNAL_NET_NAME
 virsh net-start $EXTERNAL_NET_NAME
@@ -73,16 +74,16 @@ virsh net-autostart $MANAGEMENT_NET_NAME
 
 
 #making directory for config files of VMs
-mkdir -p ./config-drives/vm1-config ./config-drives/vm2-config
+mkdir -p $DIRWAY/config-drives/vm1-config ./config-drives/vm2-config
 
 #create meta-data dir and files for VMs
 echo "instance-id: iid-${VM1_NAME}
 local-hostname: $VM1_NAME
-" >./config-drives/vm1-config/meta-data
+" > $DIRWAY/config-drives/vm1-config/meta-data
 
 echo "instance-id: iid-${VM2_NAME}
 local-hostname: $VM2_NAME
-" >./config-drives/vm2-config/meta-data
+" > $DIRWAY/config-drives/vm2-config/meta-data
 
 #making cloud-config for VMs
 echo "#cloud-config
@@ -107,6 +108,12 @@ runcmd:
 
 ssh_authorized_keys:
   - $(cat $SSH_PUB_KEY)
+chpasswd:
+  list: |
+    root:root
+    user:user
+  expire: False
+
 disable_root: false
 
 #network:
@@ -144,7 +151,7 @@ write_files:
           network: {config: disabled}
 
 
-" > ./config-drives/vm1-config/user-data
+" > $DIRWAY/config-drives/vm1-config/user-data
 
 
 
@@ -166,6 +173,13 @@ runcmd:
 
 ssh_authorized_keys:
   - $(cat $SSH_PUB_KEY)
+
+chpasswd:
+  list: |
+    root:root
+    user:user
+  expire: False
+
 disable_root: false
 
 #network:
@@ -202,15 +216,15 @@ write_files:
           network: {config: disabled}
 
 
-" > ./config-drives/vm2-config/user-data
+" > $DIRWAY/config-drives/vm2-config/user-data
 
 #making a directories to store "hdd" of VMs
 mkdir -p $(dirname "${VM1_HDD}")
 mkdir -p $(dirname "${VM2_HDD}")
 
 #making iso files for cloud-config
-mkisofs -R -V cidata -joliet -o $VM1_CONFIG_ISO ./config-drives/vm1-config
-mkisofs -R -V cidata -joliet -o $VM2_CONFIG_ISO ./config-drives/vm2-config
+mkisofs -R -V cidata -joliet -o $VM1_CONFIG_ISO $DIRWAY/config-drives/vm1-config
+mkisofs -R -V cidata -joliet -o $VM2_CONFIG_ISO $DIRWAY/config-drives/vm2-config
 
 
 #download image and making a "hdd" for VM1 from it
@@ -236,7 +250,7 @@ sudo virt-install \
 --graphics none \
 --noautoconsole
 
-./cycle $VM1_MANAGEMENT_IP
+$DIRWAY/cycle $VM1_MANAGEMENT_IP
 
 #installing a VM2
 sudo virt-install \
@@ -251,5 +265,5 @@ sudo virt-install \
 --graphics none \
 --noautoconsole
 
-./cycle $VM2_MANAGEMENT_IP
+$DIRWAY/cycle $VM2_MANAGEMENT_IP
 

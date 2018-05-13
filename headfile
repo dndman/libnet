@@ -57,18 +57,6 @@ virsh net-autostart $EXTERNAL_NET_NAME
 virsh net-autostart $MANAGEMENT_NET_NAME
 
 
-sudo virt-install \
---import \
---name $VM1_NAME \
---ram $VM1_MB_RAM \
---vcpus $VM1_NUM_CPU \
---disk ${VM1_HDD},format=qcow2,bus=virtio \
---disk ${VM1_CONFIG_ISO},device=cdrom \
---network bridge=externalbr,model=virtio,mac=$MAC \
---network bridge=internalbr,model=virtio \
---network bridge=managementbr,model=virtio \
---graphics none \
---noautoconsole
 
 
 mkdir -p ./config-drives/vm1-config ./config-drives/vm2-config
@@ -117,3 +105,15 @@ qemu-img resize $VM1_HDD +100GB
 
 cp $VM1_HDD $VM2_HDD
 
+sudo virt-install \
+--import \
+--name $VM1_NAME \
+--ram $VM1_MB_RAM \
+--vcpus $VM1_NUM_CPU \
+--disk ${VM1_HDD},format=qcow2,bus=virtio \
+--disk ${VM1_CONFIG_ISO},device=cdrom \
+--network bridge=externalbr,model=virtio,mac=$MAC \
+--network bridge=internalbr,model=virtio \
+--network bridge=managementbr,model=virtio \
+--graphics none \
+--noautoconsole

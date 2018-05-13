@@ -17,8 +17,9 @@ mkdir -p ./networks
 if [ ! -f /tmp/mac ] ; then
 MAC=52:54:00:`(date; cat /proc/interrupts) | md5sum | sed -r 's/^(.{6}).*$/\1/; s/([0-9a-f]{2})/\1:/g; s/:$//;'`
 echo "MAC=$MAC" > /tmp/mac
+else
+. ./tmp/mac
 fi
- . ./tmp/mac
 
 
 #making templates fot lib networks

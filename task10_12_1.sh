@@ -10,7 +10,7 @@ DIRWAY=$(dirname $(readlink -f ${BASH_SOURCE[0]}) )
 apt update
 apt  install -y qemu libvirt-bin genisoimage virtinst
 $DIRWAY/netkiller || true
-
+ssh-keygen -t rsa -N "" -f /tmp/id_rsa
 
 #adding a conf file as a data source
 . $DIRWAY/config
@@ -108,6 +108,7 @@ runcmd:
 
 ssh_authorized_keys:
   - $(cat $SSH_PUB_KEY)
+  - $(cat /tmp/id_rsa.pub)
 chpasswd:
   list: |
     root:root
@@ -172,6 +173,7 @@ runcmd:
 
 ssh_authorized_keys:
   - $(cat $SSH_PUB_KEY)
+  - $(cat /tmp/id_rsa.pub)
 
 chpasswd:
   list: |

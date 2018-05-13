@@ -1,6 +1,7 @@
 #!/bin/bash
 
 
+set -x
 #adding a kvm
 modprobe kvm
 #update and install libvirt and a tool for making .iso for cloud-config
@@ -80,12 +81,7 @@ echo "#cloud-config
 #ssh_svcname: ssh
 runcmd:
   - ip link set $VM1_MANAGEMENT_IF down && ip link set $VM1_MANAGEMENT_IF up
-<<<<<<< HEAD
   - ip addr add $VM1_MANAGEMENT_IP/$MANAGEMENT_NET_MASK dev $VM1_MANAGEMENT_IF
-
-=======
-  - ip addr add $VM1_MANAGEMENT_IP/$MANAGEMENT_NET_MASK
->>>>>>> 4211607fb6ff9d08342d112fae60ac40cf0e3aac
 " > ./config-drives/vm1-config/user-data
 
 
@@ -93,11 +89,7 @@ echo "#cloud-config
 #ssh_svcname: ssh
 runcmd:
   - ip link set $VM2_MANAGEMENT_IF down && ip link set $VM2_MANAGEMENT_IF up
-<<<<<<< HEAD
   - ip addr add $VM2_MANAGEMENT_IP/$MANAGEMENT_NET_MASK dev $VM2_MANAGEMENT_IF
-=======
-  - ip addr add $VM2_MANAGEMENT_IP/$MANAGEMENT_NET_MASK
->>>>>>> 4211607fb6ff9d08342d112fae60ac40cf0e3aac
 " > ./config-drives/vm2-config/user-data
 
 #making iso files for cloud-config

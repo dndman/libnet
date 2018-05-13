@@ -1,13 +1,18 @@
 #!/bin/bash
 
 
+#adding a kvm
 modprobe kvm
+#update and install libvirt and a tool for making .iso for cloud-config
+apt update
 apt  install -y qemu libvirt-bin genisoimage
 
-
+#adding a conf file as a data source
 . ./config
+#making directory for xml templates
 mkdir -p ./networks
 
+#generating MAC for external if on VM1
 MAC=52:54:00:`(date; cat /proc/interrupts) | md5sum | sed -r 's/^(.{6}).*$/\1/; s/([0-9a-f]{2})/\1:/g; s/:$//;'`
 
 
@@ -58,9 +63,10 @@ virsh net-autostart $MANAGEMENT_NET_NAME
 
 
 
-
+#making directory for config files of VMs
 mkdir -p ./config-drives/vm1-config ./config-drives/vm2-config
 
+#create meta-data dir and files for VMs
 echo "instance-id: iid-${VM1_NAME}
 local-hostname: $VM1_NAME
 " >./config-drives/vm1-config/meta-data
@@ -69,7 +75,7 @@ echo "instance-id: iid-${VM2_NAME}
 local-hostname: $VM2_NAME
 " >./config-drives/vm2-config/meta-data
 
-
+#making cloud-config for VMs
 echo "#cloud-config
 #ssh_svcname: ssh
 runcmd:
@@ -94,17 +100,21 @@ runcmd:
 >>>>>>> 4211607fb6ff9d08342d112fae60ac40cf0e3aac
 " > ./config-drives/vm2-config/user-data
 
+#making iso files for cloud-config
 mkisofs -R -V cidata -joliet -o $VM1_CONFIG_ISO ./config-drives/vm1-config
 mkisofs -R -V cidata -joliet -o $VM2_CONFIG_ISO ./config-drives/vm2-config
 
+#making a directories to store "hdd" of VMs
 mkdir -p $(dirname "${VM1_HDD}")
 mkdir -p $(dirname "${VM2_HDD}")
 
+#download image and making a "hdd" for VM1 from it
 wget $VM_BASE_IMAGE -O $VM1_HDD
 qemu-img resize $VM1_HDD +100GB
-
+#copying "hdd" of VM1 to create VM2
 cp $VM1_HDD $VM2_HDD
 
+#installing a VM1
 sudo virt-install \
 --import \
 --name $VM1_NAME \

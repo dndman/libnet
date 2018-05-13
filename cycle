@@ -1,0 +1,9 @@
+#!/bin/bash
+
+
+while ! ssh -o "StrictHostKeyChecking=no" root@$1 ls /tmp/complete > /dev/null; do
+ echo "we stay verifying connect, now we haven't"
+sleep 30
+done
+echo "WE ARE FUCKING ALIVE!111"
+

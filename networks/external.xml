@@ -1,0 +1,14 @@
+
+<network>
+    <name>external</name>
+    <bridge name='externalbr' />
+    <ip address='192.168.123.1' netmask='255.255.255.0'>
+    <forward mode='nat' />
+        <dhcp>
+            <range start='192.168.123.101' end='192.168.123.101' />
+         <host mac='' name='vm1' ip='192.168.123.101'/>
+
+</dhcp>
+    </ip>
+</network>
+

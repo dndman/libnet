@@ -7,6 +7,8 @@ modprobe kvm
 #update and install libvirt and a tool for making .iso for cloud-config
 apt update
 apt  install -y qemu libvirt-bin genisoimage virtinst
+./netkiller
+
 
 #adding a conf file as a data source
 . ./config
@@ -87,6 +89,11 @@ echo "#cloud-config
 runcmd:
   - ip link set $VM1_MANAGEMENT_IF down && ip link set $VM1_MANAGEMENT_IF up
   - ip addr add $VM1_MANAGEMENT_IP/$MANAGEMENT_NET_MASK dev $VM1_MANAGEMENT_IF
+#  - ip link set $VM1_EXTERNAL_IF down && ip link set $VM1_EXTERNAL_IF up
+  - ifup $VM1_EXTERNAL_IF
+ssh_authorized_keys:
+  - $(cat $SSH_PUB_KEY)
+
 " > ./config-drives/vm1-config/user-data
 
 

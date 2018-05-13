@@ -1,0 +1,6 @@
+#cloud-config
+#ssh_svcname: ssh
+runcmd:
+  - ip link set ens4 down && ip link set ens4 up
+  - ip addr add 192.168.125.102/255.255.255.0 dev ens4
+

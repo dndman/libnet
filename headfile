@@ -116,6 +116,7 @@ write_files:
            iface $VM1_INTERNAL_IF inet static
            address $VM1_INTERNAL_IP
            netmask $INTERNAL_NET_MASK
+           dns-nameservers $VM_DNS
 
           auto $VM1_MANAGEMENT_IF
            iface $VM1_MANAGEMENT_IF inet static
@@ -132,7 +133,7 @@ write_files:
             address $VM1_VXLAN_IP
             netmask $INTERNAL_NET_MASK
 
-   - path: //etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
+   - path: /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
      content: |
           network: {config: disabled}
 
@@ -151,7 +152,6 @@ runcmd:
   - ifup $VM2_INTERNAL_IF
   - ifup $VM2_MANAGEMENT_IF
   - ifup $VXLAN_IF
-  - ip route add default via $VM1_INTERNAL_IP dev $VM2_INTERNAL_IF
   - touch /tmp/complete
 
 ssh_authorized_keys:
@@ -168,6 +168,8 @@ write_files:
            iface $VM2_INTERNAL_IF inet static
            address $VM2_INTERNAL_IP
            netmask $INTERNAL_NET_MASK
+           dns-nameservers $VM_DNS
+           up ip route add default via $VM1_INTERNAL_IP dev $VM2_INTERNAL_IF
 
           auto $VM2_MANAGEMENT_IF
            iface $VM2_MANAGEMENT_IF inet static

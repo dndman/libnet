@@ -1,9 +1,0 @@
-#cloud-config
-#ssh_svcname: ssh
-runcmd:
-  - ip link set ens5 down && ip link set ens5 up
-  - ip addr add 192.168.125.101/255.255.255.0 dev ens5
-ssh_authorized_keys:
-  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDC2i3bKFgv9dDOmAQXl+xSh30PlYOatGE65Gk9ksttcgM/q2+YmVOh1h2HP9/OLc57EXMrfc6pFQYLfUysV/AsFklLgG+6+3w5LWeTogFjRic9x8/dWLaVDm5yu1Bf+F27XpaCVSK7TW/ZnT9y1wFpHeFzTUMEtcQtLhhJLi74Cram6QCfW1PNHLrIE9UM89VK1ROruJH3T30CxLfHf/M9aP2Ie9JTM1dHomInoKFlnxLDfFP2zppgpQKPOuz1h4+cBtVcPDuv89bsjCzgIWvxPzk9Qj1/Hj0vmWWr1FqMkS56EERbSsK6H2ww3kl/w6m8bHd/03XAaRSc3DCkavR9 root@basic
-
-

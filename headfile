@@ -101,9 +101,12 @@ mkdir -p $(dirname "${VM1_HDD}")
 mkdir -p $(dirname "${VM2_HDD}")
 
 #download image and making a "hdd" for VM1 from it
-wget $VM_BASE_IMAGE -O $VM1_HDD
-qemu-img resize $VM1_HDD +100GB
+if [ ! -f /tmp/ubuntu.qcow2 ] ; then
+wget $VM_BASE_IMAGE -O /tmp/ubuntu.qcow2
+qemu-img resize /tmp/ubuntu.qcow2 +100GB
+fi
 #copying "hdd" of VM1 to create VM2
+cp /tmp/ubuntu.qcow2 $VM1_HDD
 cp $VM1_HDD $VM2_HDD
 
 #installing a VM1

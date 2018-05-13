@@ -111,7 +111,6 @@ ssh_authorized_keys:
 chpasswd:
   list: |
     root:root
-    user:user
   expire: False
 
 disable_root: false
@@ -177,7 +176,6 @@ ssh_authorized_keys:
 chpasswd:
   list: |
     root:root
-    user:user
   expire: False
 
 disable_root: false
